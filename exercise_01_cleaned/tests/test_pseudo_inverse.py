@@ -29,7 +29,11 @@ def generate_plt_data():
         #                                                                      #
         ########################################################################
 
+        # x_hat is the least squares solution
+        # v is the null vector of D
+        # l is the scaling factor
         x = x_hat + l * v
+
         values_norm[i] = np.linalg.norm(x)
         values_error[i] = np.linalg.norm(D @ x - b)
 

@@ -18,15 +18,11 @@ def get_null_vector(D):
     # It should hold: D*x=0
     # Use SVD to compute singular vlues in S that are close to 0.
     tolerance = 1e-10
-    U, S, Vt = np.linalg.svd(D, full_matrices=False)
-    # Select rows, columns in V, close to 0
-    null_mask = S <= tolerance
-    null_vector = Vt[null_mask, :]
+    U, S, Vt = np.linalg.svd(D, full_matrices=True)
 
-    # If the null space is empty, return an empty array
-    if null_vector.size == 0:
-        null_vector = np.zeros((1, D.shape[1]))
-
+    # Take last (n - rank) rows
+    rank = np.sum(S > tolerance)
+    null_vector = Vt[rank:]
     #############################################ß###########################
     #                           END OF YOUR CODE                           #
     ########################################################################

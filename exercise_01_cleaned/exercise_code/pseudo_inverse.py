@@ -18,7 +18,7 @@ def solve_linear_equation_SVD(D, b):
     ########################################################################
 
     U, S, Vt = np.linalg.svd(D, full_matrices=False)
-    tolerance = 1e-4
+    tolerance = 1e-10 * np.max(S)
     S_inv = np.array([1 / s if s > tolerance else 0 for s in S])
 
     # Compute the pseudo-inverse of D
