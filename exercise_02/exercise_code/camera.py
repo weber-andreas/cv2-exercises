@@ -71,7 +71,7 @@ class Pinhole(Camera):
         ########################################################################
 
         # lambda * x = K @ X
-        # x = K @ Xw / lambda
+        # x = K @ Xw / lambda, labda = x_z
 
         pix = self.K @ pt
         pix = pix[:2] / pix[2]  # Normalize by the third coordinate: lambda = Z
@@ -97,9 +97,11 @@ class Pinhole(Camera):
         # the desired point, not the depth.                                    #
         ########################################################################
 
-        # X = K^-1 @ (lambda * x)
+        # lambda * x = K @ X
+        # X = lambda * (K^-1 @ x)
+        pix_homogeneous = np.array([pix[0], pix[1], 1])
         K_inv = np.linalg.inv(self.K)
-        ray = K_inv @ np.array([pix[0], pix[1], 1])
+        ray = K_inv @ pix_homogeneous
         ray /= np.linalg.norm(ray)  # Normalize the direction vector
         final_pt = ray * d
 
@@ -172,6 +174,7 @@ class Fov(Camera):
         direction = K_inv @ pix_homogeneous
         pi_d = direction[0:2] / direction[2]  # Normalize by the third coordinate
         pi = f_atan(np.linalg.norm(pi_d)) * pi_d
+
         ray = np.array([pi[0], pi[1], 1])
         ray /= np.linalg.norm(ray)
         final_pt = ray * d
