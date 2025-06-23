@@ -215,13 +215,14 @@ def reconstruct(x1, x2, y1, y2, R, T):
         lambdas = -lambdas
         gamma = -gamma
 
+    # Fix scale ambiguity
     lambdas = lambdas / gamma
 
     # Reconstruct 3D points in both camera frames
     homog_x1 = np.vstack([x1, y1, np.ones(n_pts)])
-    homog_x2 = np.vstack([x2, y2, np.ones(n_pts)])
+
     X1 = lambdas * homog_x1
-    X2 = lambdas * (R @ homog_x2 + gamma * T[:, np.newaxis])
+    X2 = R @ X1 + T[:, np.newaxis]
 
     # Count how many points have positive depth (Z > 0)
     n_positive_depth1 = np.sum(X1[2, :] > 0)
